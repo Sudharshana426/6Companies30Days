@@ -1,1 +1,41 @@
-Day 2
+354. Russian Doll Envelopes
+Code:
+class Solution:
+    def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
+        envelopes.sort(key=lambda x: (x[0], -x[1]))
+        
+        res = []		
+        for _, h in envelopes:
+            l,r=0,len(res)-1
+            while l <= r:
+                mid=(l+r)>>1
+                if res[mid]>=h:
+                    r=mid-1
+                else:
+                    l=mid+1        
+            idx = l
+            if idx == len(res):
+                res.append(h)
+            else:
+                res[idx]=h
+        return len(res)
+                                               
+661. Image Smoother
+class Solution:
+    def imageSmoother(self, img: List[List[int]]) -> List[List[int]]:
+        m, n = len(img), len(img[0])
+        result = [[0] * n for _ in range(m)]
+        directions = [(-1, -1), (-1, 0), (-1, 1),
+                      (0, -1),  (0, 0),  (0, 1),
+                      (1, -1),  (1, 0),  (1, 1)]
+    
+        for i in range(m):
+            for j in range(n):
+                total, count = 0, 0
+                for di, dj in directions:
+                    ni, nj = i + di, j + dj
+                    if 0 <= ni < m and 0 <= nj < n:
+                        total += img[ni][nj]
+                        count += 1
+                result[i][j] = total // count
+        return result
