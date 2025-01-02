@@ -1,0 +1,36 @@
+299. Bulls and Cows
+  class Solution:
+    def getHint(self, secret: str, guess: str) -> str:
+        bull=0
+        for i in range(len(secret)):
+            bull += int(secret[i] == guess[i])
+        cows=0
+        for c in set(secret):
+            cows += min(secret.count(c), guess.count(c))
+        return f"{bull}A{cows-bull}B"
+1248. Count Number of Nice Subarrays
+  class Solution:
+    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
+        current = 0
+        sub = 0
+        prefix = {current: 1}
+        for i in range(len(nums)):
+            current += nums[i] % 2
+            if current - k in prefix:
+                sub = sub + prefix[current - k]
+            prefix[current] = prefix.get(current,0) + 1
+        return sub
+187. Repeated DNA Sequences
+  class Solution:
+    def findRepeatedDnaSequences(self, s: str) -> List[str]:
+        map = {}
+        result = []
+        for i in range(len(s)-9):
+            sub = s[i:i+10]
+            if sub in map:
+                if map[sub] == 1:
+                    result.append(sub)
+                map[sub] += 1
+            else:
+                map[sub] = 1
+        return result
