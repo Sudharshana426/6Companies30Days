@@ -1,0 +1,79 @@
+LC 1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+class Solution:
+    def findTheCity(self, n: int, edges: List[List[int]], distanceThreshold: int) -> int:
+        distance = [[float('inf') for _ in range(n)] for _ in range(n)]
+        for it in edges:
+            distance[it[0]][it[1]] = it[2]
+            distance[it[1]][it[0]] = it[2]
+
+        for i in range(n):
+            distance[i][i] = 0
+
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if distance[i][k] == float('inf') or distance[k][j] == float('inf'):
+                        continue
+                    distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
+        
+        answer , city_no = n , -1
+
+        for city in range(n):
+            cnt  = 0
+            for adj_city in range(n):
+                if distance[city][adj_city] <= distanceThreshold:
+                    cnt += 1
+            
+            if cnt <= answer:
+                answer = cnt
+                city_no = city
+            
+        return city_no
+LC 2970. Count the Number of Incremovable Subarrays I
+class Solution:
+    def incremovableSubarrayCount(self, nums: List[int]) -> int:
+        res, n = 0, len(nums)
+        nums.extend([51, 0])
+        def is_strictly_increasing(i: int, j: int) -> bool:
+            while i < j:
+                if nums[i] >= nums[i + 1]: return False
+                i += 1
+            return True
+        
+        for i in range(n):
+            for j in range(i, n):
+                if is_strictly_increasing(0, i - 1) and \
+                    is_strictly_increasing(j + 1, n - 1) and \
+                    nums[i - 1] < nums[j + 1]: res += 1
+        return res
+LC 1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+class Solution:
+    def findTheCity(self, n: int, edges: List[List[int]], distanceThreshold: int) -> int:
+        distance = [[float('inf') for _ in range(n)] for _ in range(n)]
+        for it in edges:
+            distance[it[0]][it[1]] = it[2]
+            distance[it[1]][it[0]] = it[2]
+
+        for i in range(n):
+            distance[i][i] = 0
+
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if distance[i][k] == float('inf') or distance[k][j] == float('inf'):
+                        continue
+                    distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
+        
+        answer , city_no = n , -1
+
+        for city in range(n):
+            cnt  = 0
+            for adj_city in range(n):
+                if distance[city][adj_city] <= distanceThreshold:
+                    cnt += 1
+            
+            if cnt <= answer:
+                answer = cnt
+                city_no = city
+            
+        return city_no
