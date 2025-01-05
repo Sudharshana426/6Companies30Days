@@ -1,0 +1,90 @@
+324. Wiggle Sort II
+Code:
+class Solution:
+    def wiggleSort(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        def quick_sort(nums):
+            if len(nums) <= 1:
+                return nums
+
+            pivot = nums[len(nums) // 2]
+            left = [x for x in nums if x < pivot]
+            middle = [x for x in nums if x == pivot]
+            right = [x for x in nums if x > pivot]
+            return quick_sort(left) + middle + quick_sort(right)
+
+        nums[:] = quick_sort(nums)
+
+        half = len(nums[::2])
+        nums[::2], nums[1::2] = nums[:half][::-1], nums[half:][::-1]
+
+638. Shopping Offers
+class Solution:
+    def shoppingOffers(self, price: List[int], special: List[List[int]], needs: List[int]) -> int:
+        return self.dp(price, special, needs, {})
+
+    def dp(self, prices, specials, needs, memo):
+
+        if tuple(needs) in memo:
+            return memo[tuple(needs)]
+        
+
+        cost = sum(prices[i] * needs[i] for i in range(len(prices)))
+
+        for offer in specials:
+            updated_needs = [needs[j] - offer[j] for j in range(len(needs))]
+
+            if all(updated_needs[j] >= 0 for j in range(len(needs))):
+                cost = min(cost, offer[-1] + self.dp(prices, specials, updated_needs, memo))
+
+        memo[tuple(needs)] = cost
+        return cost
+2976. Minimum Cost to Convert String I
+from collections import defaultdict
+from heapq import heappush, heappop
+from math import inf
+
+class Solution:
+    def minimumCostFrom(self, sourceChar):
+        bests = {}
+        seenCost = defaultdict(lambda: inf)
+        seenCost[sourceChar] = 0
+        frontier = [(0, sourceChar)]
+        while len(frontier) > 0:
+            reachCost, current = heappop(frontier)
+            if current in bests:
+                continue
+            bests[current] = reachCost
+            for d, edgeCost in self.edges[current].items():
+                totalCost = reachCost + edgeCost
+                if totalCost < seenCost[d]:
+                    heappush(frontier, (totalCost, d))
+                    seenCost[d] = totalCost
+        return bests
+    def minimumCost(self, source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
+        self.edges = defaultdict(lambda: {})
+        for i in range(len(original)):
+            s = original[i]
+            d = changed[i]
+            c = cost[i]
+            if d not in self.edges[s] or c < self.edges[s][d]:
+                self.edges[s][d] = c
+
+        bests = defaultdict(lambda: {})
+        totalCost = 0
+        for s, t in zip(source, target):
+            if s != t:
+                if t in bests[s]:
+                    totalCost += bests[s][t]
+                elif len(bests[s]) > 0:
+                    return -1
+                else:
+                    best = self.minimumCostFrom(s)
+                    bests[s] = best
+                    if t in best:
+                        totalCost += best[t]
+                    else:
+                        return -1
+        return totalCost
